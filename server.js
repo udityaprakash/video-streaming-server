@@ -150,6 +150,28 @@ app.post('/upload', upload.single('video'), async (req, res) => {
     }
   });
 
+  app.delete('/delete/:videoId', async (req, res) => {
+    try {
+      const videoId = req.params.videoId;
+      
+      // Check if the video with the given ID exists in GridFS
+      const file = await gfc.find({ _id: new ObjectId(videoId) }).toArray();
+  
+      if (file.length === 0) {
+        return res.status(404).json({ error: 'Video not found' });
+      }
+  
+      // Delete the video document and its chunks
+      await gfc.delete(file[0]._id);
+  
+      console.log(`Video with ID ${videoId} deleted from MongoDB`);
+      res.status(200).json({ message: `Video with ID ${videoId} deleted from MongoDB` });
+    } catch (error) {
+      console.error('Error during deletion:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
