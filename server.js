@@ -26,64 +26,6 @@ const collectionName = 'uploadedVideos';
 const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
 // 1 MB
 
-// app.get('/stream/:id', async (req, res) => {
-//   try {
-//     // Connect to MongoDB
-//     await client.connect();
-//     console.log('Connected to MongoDB');
-
-//     // Select the database and collection
-//     const database = client.db(dbName);
-//     const collection = database.collection(collectionName);
-
-//     const videoId = req.params.id;
-
-//     // Find the video by ID in MongoDB
-//     const videoData = await collection.findOne({ _id: ObjectId(videoId) });
-
-//     if (!videoData) {
-//       return res.status(404).json({ error: 'Video not found' });
-//     }
-
-//     // Set headers for video streaming
-//     res.setHeader('Content-Type', 'video/mp4');
-
-//     const videoBuffer = videoData.video;
-//     const totalSize = videoBuffer.length;
-
-//     // Set the initial range of the video to be streamed
-//     let start = 0;
-//     let end = chunkSize - 1;
-
-//     // Loop to stream video in chunks
-//     while (start < totalSize) {
-//       if (end >= totalSize - 1) {
-//         end = totalSize - 1;
-//       }
-
-//       // Send the chunk
-//       res.status(206).header({
-//         'Content-Range': `bytes ${start}-${end}/${totalSize}`,
-//         'Accept-Ranges': 'bytes',
-//         'Content-Length': end - start + 1,
-//       }).end(videoBuffer.slice(start, end + 1));
-
-//       // Move to the next chunk
-//       start = end + 1;
-//       end = start + chunkSize - 1;
-
-//       // Add a delay to simulate streaming (adjust as needed)
-//       await new Promise(resolve => setTimeout(resolve, 100));
-//     }
-//   } catch (error) {
-//     console.error('Error during video streaming:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   } finally {
-//     // Close the MongoDB connection
-//     await client.close();
-//   }
-// });
-
 let gfs;
 
 app.post('/upload', upload.single('video'), async (req, res) => {
